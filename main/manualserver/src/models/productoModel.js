@@ -5,8 +5,10 @@ import {
     getDocs,
     getDoc,
     addDoc,
-    doc
+    doc,deleteDoc
 } from 'firebase/firestore';
+
+
 
 const productosCollection = collection(db, 'products');
 
@@ -52,3 +54,34 @@ export async function createProducto(producto) {
         price: producto.price
     };
 }
+
+
+export async function deleteProducto(id) {
+    console.log('Intentando eliminar producto con ID:', id);
+    const productoRef = doc(db, 'products', id);
+
+    const snap = await getDoc(productoRef);
+
+    let producto = null;
+
+    
+    if (!snap.exists()) {
+        return {
+            producto: producto,
+            mensaje: 'Producto no encontrado'
+        };
+    }
+
+    producto = {
+        id: snap.id,
+        ...snap.data()
+    };
+
+    await deleteDoc(productoRef);
+
+    return {
+        producto,
+        mensaje: 'Producto eliminado correctamente'
+    };
+}
+
