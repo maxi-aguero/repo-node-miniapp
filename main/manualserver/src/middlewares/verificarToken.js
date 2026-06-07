@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
+
 export const verificarToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
@@ -15,6 +17,7 @@ export const verificarToken = (req, res, next) => {
         req.user = datosUsuarioEncriptados; 
         next(); 
     }
+    
     catch (error) {
         return res.status(403).json({ message: 'Token inválido o expirado' }); 
     }

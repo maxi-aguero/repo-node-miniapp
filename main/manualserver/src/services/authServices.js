@@ -8,9 +8,11 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 export const autenticarUsuario = (email,password)=>{
 
+    let token = null;
     if (email == defaultUser.email && password==defaultUser.password){
-        const token = jwt.sign({id: defaultUser.id, email: defaultUser.email}, JWT_SECRET_KEY, {expiresIn: '1h'});
-        return token;
+       token = jwt.sign({email: defaultUser.email}, JWT_SECRET_KEY, {expiresIn: '1h'});
+       console.log('Usuario autenticado exitosamente');
+       console.log(token);// imprimo el token para usar como pruebas
     }
-    return null;
+    return token;
 }

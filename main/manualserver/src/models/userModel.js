@@ -1,9 +1,9 @@
 export class User {
-    constructor(id, email, password) {
-        this.id = id;
+    
+    constructor(email, password) {
         this.email = email;
         this.password = password;
     }
 }
 
-export const defaultUser = new User(1, 'user@email.com', 'StrongPass123');
+export const defaultUser = new User('user@email.com', 'StrongPass123');

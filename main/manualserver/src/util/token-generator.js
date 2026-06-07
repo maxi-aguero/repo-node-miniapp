@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 const secret_key = process.env.JWT_SECRET_KEY;
@@ -7,7 +8,6 @@ const secret_key = process.env.JWT_SECRET_KEY;
 export const generateToken = (userData) => {
 
   const user = {
-    id: userData.id,
     email: userData.email
   };
 

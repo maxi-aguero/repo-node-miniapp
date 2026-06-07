@@ -6,20 +6,20 @@ export const login = (req, res) => {
 
     if (!email || !password) {
         return res.status(400).json({
-            mensaje: 'Debe enviar email y password'
+            mensaje: 'Error 400: Bad Request - Debe enviar email y password'
         });
     }
 
     const token = autenticarUsuario(email, password);
 
     if (token) {
-        return res.json({
-            mensaje: 'Login exitoso',
+        return res.status(200).json({
+            mensaje: '200 OK - Login exitoso',
             token
         });
     }
 
     return res.status(401).json({
-        mensaje: 'Credenciales inválidas'
+        mensaje: 'Error 401: Unauthorized - Credenciales inválidas'
     });
 };
