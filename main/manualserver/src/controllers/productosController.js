@@ -1,103 +1,115 @@
-import * as productosService from '../services/productoService.js';
+import {obtenerTodosProductosService,obtenerProductoPorIdService,crearProductoService,eliminarProductoService} from '../services/productoService.js';
 
-function validarProducto(producto) {
-    const { name, price } = producto;
+function validarDatosProducto(producto) {
+    const { title, price, category } = producto;
 
-    if (typeof name !== 'string' || name.trim() === '') {
-        throw new Error('El name debe ser texto y no estar vacío');
+    if (typeof title !== 'string' || title.trim() === '') {
+        throw new Error('El title debe ser texto y no estar vacío');
     }
 
     if (typeof price !== 'number' || price <= 0) {
         throw new Error('El price debe ser un número positivo');
     }
+    if (typeof category !== 'string' || category.trim() === '') {
+        throw new Error('La category debe ser texto y no estar vacía');
+    }
 }
 
 
-export const getProductos = async (req, res) => {
-    try {
-        const productos = await productosService.obtenerTodos();
 
-        res.json({
+
+export const getProductosController = async (req, res, next) => {
+    try {
+        const productos = await obtenerTodosProductosService();
+
+        res.status(200).json({
             mensaje: 'Recursos obtenidos con éxito',
             productos
         });
 
     } catch (error) {
-        res.status(500).json({
-            mensaje: error.message
-        });
+       next(error);
     }
 };
 
-export const getProductoById = async (req, res) => {
+export const getProductoByIdController = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const producto = await productosService.obtenerPorId(id);
+        const producto = await obtenerProductoPorIdService(id);
 
         if (!producto) {
             return res.status(404).json({
-                mensaje: 'Producto no encontrado'
+                mensaje: 'Producto no encontrado',
+                producto
             });
         }
 
-        res.json({
+        res.status(200).json({
             mensaje: 'Producto solicitado',
             producto
         });
 
     } catch (error) {
-        res.status(500).json({
-            mensaje: error.message
-        });
+        next(error);
     }
 };
 
 
-
-export const createProducto = async (req, res) => {
+export const createProductoController = async (req, res, next) => {
+   
     try {
-        const { name, price } = req.body;
-        validarProducto({ name, price });
+        validarDatosProducto(req.body);
+    } catch (error) {
+        
+        return res.status(400).json({
+            mensaje: error.message
+        });
+    }
 
-        const nuevo = await productosService.crearProducto({ name, price });
+    
+      try {           
+        const nuevoproducto = {
+            title: req.body.title,
+            price: req.body.price,
+            category: req.body.category
+        };
+
+        const nuevo = await crearProductoService(nuevoproducto);
 
         res.status(201).json({
             mensaje: 'Producto creado con éxito',
             nuevo
         });
 
-    } catch (error) {
-        res.status(400).json({
-            mensaje: error.message
-        });
+    } 
+    
+    catch (error) {  
+
+        next(error);
     }
 };
 
-export const deleteProducto = async (req, res) => {
+export const deleteProductoController  = async (req, res, next) => {
     try {
-        console.log('Recibida solicitud para eliminar producto');
         const { id } = req.params;
 
-        const result = await productosService.eliminarProducto(id);
+        const result = await eliminarProductoService(id);
 
         if (!result.producto) {
             return res.status(404).json({
                 mensaje: result.mensaje,
-                producto: null
+                producto: result.producto
             });
         }
 
-        return res.json({
+        return res.status(200).json({
             mensaje: result.mensaje,
             producto: result.producto
         });
 
     } catch (error) {
-        return res.status(500).json({
-            mensaje: error.message,
-            producto: null
-        });
+        next(error);
     }
 };
 

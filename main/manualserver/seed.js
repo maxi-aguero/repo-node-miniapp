@@ -2,9 +2,9 @@ import { db } from './src/data/data.js';
 import { collection, addDoc } from 'firebase/firestore';
 
 const productos = [
-    { name: 'Laptop', price: 999.99 },
-    { name: 'Smartphone', price: 499.99 },
-    { name: 'Headphones', price: 199.99 }
+    { title: 'Laptop', price: 999.99 ,category: 'Tecno'},
+    { title: 'Smartphone', price: 499.99, category: 'Tecno' },
+    { title: 'Headphones', price: 199.99, category: 'Tecno' }
 ];
 
 async function seed() {

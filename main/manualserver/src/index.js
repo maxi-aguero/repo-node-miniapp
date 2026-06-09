@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 
-app.use('/api/productos', productosRoutes);
+app.use('/api/products', productosRoutes);
 app.use('/auth', authRoutes);
 
 app.use((req, res, next) => {
@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 
 
 app.use((err, req, res, next) => {
+  
 
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({

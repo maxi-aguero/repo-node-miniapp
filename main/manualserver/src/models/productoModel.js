@@ -1,14 +1,5 @@
 import { db } from '../data/data.js';
-
-import {
-    collection,
-    getDocs,
-    getDoc,
-    addDoc,
-    doc,deleteDoc
-} from 'firebase/firestore';
-
-
+import {collection,getDocs,getDoc,addDoc,doc,deleteDoc} from 'firebase/firestore';
 
 const productosCollection = collection(db, 'products');
 
@@ -18,9 +9,12 @@ export async function getAllProductos() {
     const productos = [];
 
     querySnapshot.forEach((documento) => {
+        const data = documento.data();
         productos.push({
             id: documento.id,
-            ...documento.data()
+            title: data.title,
+            price: data.price,
+            category: data.category            
         });
     });
 
@@ -36,34 +30,42 @@ export async function getProductoById(id) {
         return null;
     }
 
+    const data = productoSnap.data();
     return {
         id: productoSnap.id,
-        ...productoSnap.data()
+        title: data.title,
+        price: data.price,
+        category: data.category
     };
 }
 
 export async function createProducto(producto) {
+/***Dejo que se puede agregar productos repetidos , pero tiene id autogenerado diferente
+ejemplo { title: 'Fideos', price: 100,category: 'food' }{title: 'Fideos', price: 100,category: 'food' }
+ambos se pueden agregar pero internamente tienen id diferente***/
+
     const docRef = await addDoc(productosCollection, {
-        name: producto.name,
-        price: producto.price
+        title: producto.title,
+        price: producto.price,
+        category: producto.category
     });
 
     return {
         id: docRef.id,
-        name: producto.name,
-        price: producto.price
+        title: producto.title,
+        price: producto.price,
+        category: producto.category
     };
 }
 
 
 export async function deleteProducto(id) {
-    console.log('Intentando eliminar producto con ID:', id);
-    const productoRef = doc(db, 'products', id);
-
-    const snap = await getDoc(productoRef);
+    /***busca un id dentro de la coleccion y devuelve su referencia ***/
+    const productoRef = doc(db, 'products', id); 
+    /***me dice si el documento existe o no, y si existe devuelve su contenido */
+    const snap = await getDoc(productoRef); 
 
     let producto = null;
-
     
     if (!snap.exists()) {
         return {
@@ -71,10 +73,12 @@ export async function deleteProducto(id) {
             mensaje: 'Producto no encontrado'
         };
     }
-
+    const miproductoaeliminar = snap.data(); //ya me asegure que tenga datos snap.data() 
     producto = {
         id: snap.id,
-        ...snap.data()
+        title: miproductoaeliminar.title,
+        price: miproductoaeliminar.price,
+        category: miproductoaeliminar.category
     };
 
     await deleteDoc(productoRef);

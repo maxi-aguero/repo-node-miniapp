@@ -5,7 +5,7 @@ dotenv.config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 
-export const verificarToken = (req, res, next) => {
+const verificarTokenMiddleware = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
 
@@ -23,3 +23,4 @@ export const verificarToken = (req, res, next) => {
     }
 };
 
+export default verificarTokenMiddleware;

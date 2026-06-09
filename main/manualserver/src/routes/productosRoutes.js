@@ -1,18 +1,18 @@
 import express from 'express';
-import {getProductos, getProductoById, createProducto,deleteProducto} from '../controllers/productosController.js';
-import{verificarToken} from '../middlewares/verificarToken.js';
+import {getProductosController, getProductoByIdController, createProductoController, deleteProductoController} from '../controllers/productosController.js';
+import verificarTokenMiddleware from '../middlewares/verificarToken.js';
 
 const router = express.Router();
 
 
 // ruta: /api/productos 
-/**verificarToken es un middleware que se ejecuta antes de los controladores
+/**verificarTokenMiddleware es un middleware que se ejecuta antes de los controladores
  para asegurar que el usuario esté autenticado  ***/
  
-router.get('/', verificarToken, getProductos);
-router.get('/:id', verificarToken, getProductoById);
-router.post('/new', verificarToken, createProducto);
-router.delete('/delete/:id', verificarToken, deleteProducto);
+router.get('/', verificarTokenMiddleware, getProductosController);
+router.get('/:id', verificarTokenMiddleware, getProductoByIdController);
+router.post('/create', verificarTokenMiddleware, createProductoController);
+router.delete('/delete/:id', verificarTokenMiddleware, deleteProductoController);
 
 
 export default router;
