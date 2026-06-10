@@ -1,5 +1,15 @@
 import { autenticarUsuario } from '../services/authServices.js';
 
+/**
+ * 
+ * Controlador para manejar la autenticación de usuarios.
+ * Recibe email y password desde el cuerpo de la solicitud, 
+ * valida que estén presentes, y luego llama a la función de servicio para autenticar al usuario.
+ * Si la autenticación es exitosa, devuelve un token; de lo contrario, devuelve un mensaje de error 
+ *  
+ */
+
+
 export const login = (req, res) => {
 
     const { email, password } = req.body || {};

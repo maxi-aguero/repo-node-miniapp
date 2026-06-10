@@ -14,10 +14,24 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-
+/**
+ * Rutas para productos y autenticación
+ * - /api/products: Rutas relacionadas con productos (CRUD)
+ * - /auth: Rutas relacionadas con autenticación (login)
+ * 
+ */
 app.use('/api/products', productosRoutes);
 app.use('/auth', authRoutes);
 
+/**
+ * Manejo de errores:
+ * - 404: Ruta no encontrada
+ * - 400: JSON inválido en la solicitud
+ * - 500: Error interno del servidor  
+ * Midleware para manejar errores comunes y enviar respuestas JSON con mensajes de error.
+ * Esto mejora la experiencia del cliente al proporcionar información útil sobre lo que salió mal.
+ * 
+ */
 app.use((req, res, next) => {
   res.status(404).json({
     mensaje: 'Error 404: Not Found - Ruta no encontrada'

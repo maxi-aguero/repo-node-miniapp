@@ -1,3 +1,8 @@
+/***Archivo solo para usos de prueba
+ * Se ejecuta con node seed.js para cargar productos de prueba en la base de datos
+ * 
+ */
+
 import { db } from './src/data/data.js';
 import { collection, addDoc } from 'firebase/firestore';
 

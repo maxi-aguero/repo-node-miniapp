@@ -1,5 +1,8 @@
 import {obtenerTodosProductosService,obtenerProductoPorIdService,crearProductoService,eliminarProductoService} from '../services/productoService.js';
-
+/**
+ *  Controla si los datos del productos estan completos
+ *  
+ */
 function validarDatosProducto(producto) {
     const { title, price, category } = producto;
 
@@ -14,8 +17,6 @@ function validarDatosProducto(producto) {
         throw new Error('La category debe ser texto y no estar vacía');
     }
 }
-
-
 
 
 export const getProductosController = async (req, res, next) => {

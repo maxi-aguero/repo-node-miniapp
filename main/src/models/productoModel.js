@@ -1,8 +1,13 @@
-import { db } from '../data/data.js';
+import db from '../data/firebase.js';
 import {collection,getDocs,getDoc,addDoc,doc,deleteDoc} from 'firebase/firestore';
 
 const productosCollection = collection(db, 'products');
-
+/**
+ * Obtiene todos los productos de la colección "products" en Firestore.
+ * Devuelve una promesa que se resuelve con un array de productos.
+ * El array de objetos de productos lleva su id, title, price y category. 
+ *  
+ */
 export async function getAllProductos() {
     const querySnapshot = await getDocs(productosCollection);
 
@@ -20,6 +25,11 @@ export async function getAllProductos() {
 
     return productos;
 }
+/**
+ * Obtiene un producto por su ID de la colección "products" en Firestore.
+ * Devuelve una promesa que se resuelve con el producto encontrado o null si no existe.
+ * El producto devuelto es un objeto con su id, title, price y category.
+ */
 
 export async function getProductoById(id) {
     const productoRef = doc(db, 'products', id);
@@ -38,11 +48,14 @@ export async function getProductoById(id) {
         category: data.category
     };
 }
+/**
+ * Crea un nuevo producto en la colección "products" de Firestore.
+ * Recibe un objeto producto con las propiedades title, price y category.
+ * Devuelve una promesa que resulta ser el producto creado e  incluyendo su id
+ *  
+ */
 
 export async function createProducto(producto) {
-/***Dejo que se puede agregar productos repetidos , pero tiene id autogenerado diferente
-ejemplo { title: 'Fideos', price: 100,category: 'food' }{title: 'Fideos', price: 100,category: 'food' }
-ambos se pueden agregar pero internamente tienen id diferente***/
 
     const docRef = await addDoc(productosCollection, {
         title: producto.title,
@@ -58,11 +71,15 @@ ambos se pueden agregar pero internamente tienen id diferente***/
     };
 }
 
+/**
+ * 
+ * Elimina un producto por su ID de la colección "products" en Firestore.
+ * Devuelve una promesa que se resuelve con el producto eliminado o un mensaje de error si no existe.
+ * El producto devuelto es un objeto con su id, title, price y category.
+ */
 
 export async function deleteProducto(id) {
-    /***busca un id dentro de la coleccion y devuelve su referencia ***/
     const productoRef = doc(db, 'products', id); 
-    /***me dice si el documento existe o no, y si existe devuelve su contenido */
     const snap = await getDoc(productoRef); 
 
     let producto = null;
@@ -73,7 +90,7 @@ export async function deleteProducto(id) {
             mensaje: 'Producto no encontrado'
         };
     }
-    const miproductoaeliminar = snap.data(); //ya me asegure que tenga datos snap.data() 
+    const miproductoaeliminar = snap.data();  
     producto = {
         id: snap.id,
         title: miproductoaeliminar.title,
