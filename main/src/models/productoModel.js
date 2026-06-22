@@ -3,10 +3,10 @@ import {collection,getDocs,getDoc,addDoc,doc,deleteDoc} from 'firebase/firestore
 
 const productosCollection = collection(db, 'products');
 /**
- * Obtiene todos los productos de la colección "products" en Firestore.
- * Devuelve una promesa que se resuelve con un array de productos.
- * El array de objetos de productos lleva su id, title, price y category. 
- *  
+ * Va a Firestore y trae todos los productos de la colección "products"
+ * y devuelve una promesa que se resuelve con un array de dichos productos.
+ * En donde cada objeto del array contiene su ID y sus datos correspondientes.
+ * 
  */
 export async function getAllProductos() {
     const querySnapshot = await getDocs(productosCollection);
@@ -17,20 +17,19 @@ export async function getAllProductos() {
         const data = documento.data();
         productos.push({
             id: documento.id,
-            title: data.title,
-            price: data.price,
-            category: data.category            
+            ...data           
         });
     });
 
     return productos;
 }
-/**
- * Obtiene un producto por su ID de la colección "products" en Firestore.
- * Devuelve una promesa que se resuelve con el producto encontrado o null si no existe.
- * El producto devuelto es un objeto con su id, title, price y category.
- */
 
+/**
+ * Va a Firestore y trae un documento mediante su ID en la colección "products",
+ * y devuelve una promesa que se resuelve con un objeto que contiene el ID y los datos del producto,
+ * o null en caso de que el documento no exista.
+ * 
+ */
 export async function getProductoById(id) {
     const productoRef = doc(db, 'products', id);
 
@@ -43,66 +42,53 @@ export async function getProductoById(id) {
     const data = productoSnap.data();
     return {
         id: productoSnap.id,
-        title: data.title,
-        price: data.price,
-        category: data.category
+        ...data
     };
 }
-/**
- * Crea un nuevo producto en la colección "products" de Firestore.
- * Recibe un objeto producto con las propiedades title, price y category.
- * Devuelve una promesa que resulta ser el producto creado e  incluyendo su id
- *  
- */
 
+/**
+ * Agrega un nuevo documento producto en la coleccion "products" de Firestore.
+ * Recibe un objeto producto y devuelve una promesa que 
+ * resulta ser el los datos producto creado e incluyendo su id
+ *
+ */
 export async function createProducto(producto) {
 
-    const docRef = await addDoc(productosCollection, {
-        title: producto.title,
-        price: producto.price,
-        category: producto.category
-    });
+    const docRef = await addDoc(productosCollection,
+        producto
+    );
 
     return {
         id: docRef.id,
-        title: producto.title,
-        price: producto.price,
-        category: producto.category
+        ...producto
     };
 }
 
 /**
- * 
- * Elimina un producto por su ID de la colección "products" en Firestore.
- * Devuelve una promesa que se resuelve con el producto eliminado o un mensaje de error si no existe.
- * El producto devuelto es un objeto con su id, title, price y category.
+ * Va a Firestore y trae un documento por su ID en la coleccion 'products' para eliminarlo;
+ * y devuelve una promesa que se resuelve con el ID y los datos del producto eliminado,
+ * o con el valor de producto en null si el documento no exista.
  */
-
 export async function deleteProducto(id) {
+    
     const productoRef = doc(db, 'products', id); 
     const snap = await getDoc(productoRef); 
 
-    let producto = null;
+    if (!snap.exists()) 
+        return          
+            null;
+        
     
-    if (!snap.exists()) {
-        return {
-            producto: producto,
-            mensaje: 'Producto no encontrado'
-        };
-    }
-    const miproductoaeliminar = snap.data();  
-    producto = {
-        id: snap.id,
-        title: miproductoaeliminar.title,
-        price: miproductoaeliminar.price,
-        category: miproductoaeliminar.category
-    };
+    
+    const producto = snap.data();  
+   
+   
 
     await deleteDoc(productoRef);
 
     return {
-        producto,
-        mensaje: 'Producto eliminado correctamente'
+        id,
+        ...producto
     };
 }
 

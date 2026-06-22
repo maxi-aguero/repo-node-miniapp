@@ -1,15 +1,18 @@
 /***Archivo solo para usos de prueba
- * Se ejecuta con node seed.js para cargar productos de prueba en la base de datos
+ * Se ejecuta con node seed.js para cargar productos de prueba del documento 'products'
  * 
  */
 
-import { db } from './src/data/data.js';
+import db from './src/data/firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 
 const productos = [
-    { title: 'Laptop', price: 999.99 ,category: 'Tecno'},
-    { title: 'Smartphone', price: 499.99, category: 'Tecno' },
-    { title: 'Headphones', price: 199.99, category: 'Tecno' }
+    { title: 'Laptop', price: 991939.39 ,category: 'Tecno'},
+    { title: 'Smartphone', price: 490019.99, category: 'Tecno' , stock:8},
+    { title: 'Pañales', price: 11121.00, category: 'Supermercado',enoferta: true },
+    { title: 'Yerba', price: 4622.87, category: 'Supermercado' },
+    { title: 'Cortadora de cesped', price: 169000.19, category: 'Herramientas' },
+    { title: 'Bordeadora', price: 71239.14, category: 'Herramientas' }
 ];
 
 async function seed() {

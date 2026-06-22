@@ -6,4 +6,4 @@ export class User {
     }
 }
 
-export const miUsuarioFicticio = new User('user@email.com', 'StrongPass123');
+export const miUsuarioFicticio = new User('user@email.com', 'pass');
