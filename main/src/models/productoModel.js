@@ -1,5 +1,5 @@
 import db from '../data/firebase.js';
-import {collection,getDocs,getDoc,addDoc,doc,deleteDoc} from 'firebase/firestore';
+import {collection,getDocs,getDoc,addDoc,doc,deleteDoc, updateDoc} from 'firebase/firestore';
 
 const productosCollection = collection(db, 'products');
 /**
@@ -57,6 +57,7 @@ export async function createProducto(producto) {
     const docRef = await addDoc(productosCollection,
         producto
     );
+    producto.id=docRef.id;
 
     return {
         id: docRef.id,
@@ -90,5 +91,26 @@ export async function deleteProducto(id) {
         id,
         ...producto
     };
+}
+
+export async function actualizarProducto(id,datosamodificar) {
+
+    const productoRef = doc(db, 'products', id);
+
+    const productoSnap = await getDoc(productoRef);
+
+    if (!productoSnap.exists()) {
+        return null;
+    }
+
+    await updateDoc(productoRef,datosamodificar);
+    
+
+    return {
+        id,
+        ...datosamodificar
+    };
+
+
 }
 

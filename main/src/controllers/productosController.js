@@ -1,11 +1,12 @@
-import {obtenerTodosProductosService,obtenerProductoPorIdService,crearProductoService,eliminarProductoService} from '../services/productoService.js';
+import {obtenerTodosProductosService,obtenerProductoPorIdService,crearProductoService,eliminarProductoService,actualizarProductoService} from '../services/productoService.js';
 
 /**
  *  Controla si los datos del productos (title,price,category) esten correctos
  **/
 function validarDatosProducto(producto) {
-    const { title, price, category } = producto;
-
+    
+    const { title, price,category} = producto || {};
+      
     if (typeof title !== 'string' || title.trim() === '') {
         throw new Error('El title debe ser texto y no estar vacio');
     }
@@ -84,6 +85,13 @@ export const getProductoByIdController = async (req, res, next) => {
  */
 export const createProductoController = async (req, res, next) => {
    
+    const { title, price,category} = req.body || {};
+
+    if (!title || !price||!category) {
+        return res.status(400).json({
+            mensaje: 'Error 400: Bad Request - Debe enviar el title, price y category'
+        });}
+
     try {
         validarDatosProducto(req.body);
     } catch (error) {
@@ -129,7 +137,6 @@ export const deleteProductoController  = async (req, res, next) => {
 
         const result = await eliminarProductoService(id);       
 
-        console.log(result);
         
         if (!result) {
             return res.status(404).json({
@@ -151,4 +158,51 @@ export const deleteProductoController  = async (req, res, next) => {
     }
 };
 
+export const actualizarProductoController  = async (req, res, next) => {
+    
+    
+    const { id } = req.params;
 
+    const { title, price,category} = req.body || {};
+
+    if (!title || !price||!category) {
+        return res.status(400).json({
+            mensaje: 'Error 400: Bad Request - Debe enviar el title, price y category'
+        });}
+
+    try {
+      
+     
+
+        validarDatosProducto(req.body);
+    } catch (error) {
+        
+                        return res.status(400).json({
+                            mensaje: error.message
+                        });
+    }
+
+    
+    try {
+    
+        const datanuevaproducto = req.body;
+        const miproductoactualizado = await actualizarProductoService(id,datanuevaproducto);
+        
+        
+        if (!miproductoactualizado) {
+            return res.status(404).json({
+                mensaje: 'Producto no encontrado',
+                miproductoactualizado
+            });
+        }
+
+        res.status(200).json({
+            mensaje: 'Producto modificado con exito',
+            miproductoactualizado
+        });
+    
+    } catch (error) {
+        next(error);
+    }
+
+}

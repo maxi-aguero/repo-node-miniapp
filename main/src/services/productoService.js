@@ -1,4 +1,4 @@
-import {getAllProductos,getProductoById,createProducto,deleteProducto} from '../models/productoModel.js';
+import {getAllProductos,getProductoById,createProducto,deleteProducto,actualizarProducto} from '../models/productoModel.js';
 /**
  * Servicio para obtener todos los productos
  *  
@@ -26,4 +26,11 @@ export const crearProductoService = async (data) => {
  */
 export const eliminarProductoService = async (id) => {  
         return await deleteProducto(id);    
+};
+/**
+ * Servicio para actualizar un producto
+ * 
+ */
+export const actualizarProductoService = async (id,datosamodificar) => {  
+        return await actualizarProducto(id,datosamodificar);    
 };
